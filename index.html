@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Excel検索アプリ</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+</head>
+
+<body>
+
+<h1>Excel検索アプリ</h1>
+
+<div class="controls">
+
+<input
+type="number"
+id="searchInput"
+placeholder="検索したい数字">
+
+<button id="searchBtn">
+検索
+</button>
+
+<button id="resetBtn">
+リセット
+</button>
+
+</div>
+
+<div id="sheetsContainer"></div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
