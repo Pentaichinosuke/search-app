@@ -1,15 +1,15 @@
 const RED_NUMBERS = [
-    1,
-    13,
-    25,
-    29,
-    37,
-    42,
-    46,
-    51
+    7,
+    14,
+    24,
+    40,
+    44,
+    51,
+    54,
+    58
 ];
 
-fetch("data_VR2.xlsx")
+fetch("data_VR3.xlsx")
 .then(response => response.arrayBuffer())
 .then(data => {
 
