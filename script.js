@@ -9,6 +9,20 @@ const RED_NUMBERS = [
     58
 ];
 
+const GREEN_NUMBERS = [
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70
+];
+
+
 fetch("data_VR3.xlsx")
 .then(response => response.arrayBuffer())
 .then(data => {
@@ -88,6 +102,14 @@ fetch("data_VR3.xlsx")
                     ){
                         element.classList.add(
                             "red-number"
+                        );
+                    }
+
+                    if(
+                        GREEN_NUMBERS.includes(value)
+                    ){
+                        element.classList.add(
+                            "green-number"
                         );
                     }
                 }

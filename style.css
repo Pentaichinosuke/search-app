@@ -50,6 +50,11 @@ th{
     font-weight:bold;
 }
 
+.green-number{
+    background:#c8f7c5;
+    font-weight:bold;
+}
+
 .search-hit{
     background:yellow !important;
     font-weight:bold;
