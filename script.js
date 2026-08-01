@@ -91,26 +91,24 @@ fetch("data_VR3.xlsx")
                     colIndex >= 2
                 ){
 
-                    const value =
-                        Number(cell);
+                    const text = String(cell).trim();
+                    const value = Number(cell);
 
-                    element.dataset.searchable =
-                        "true";
+                    element.dataset.searchable = "true";
 
-                    if(
-                        RED_NUMBERS.includes(value)
-                    ){
-                        element.classList.add(
-                            "red-number"
-                        );
+                    // P または p
+                    if(text.toUpperCase() === "P"){
+                        element.classList.add("pink-number");
                     }
 
-                    if(
-                        GREEN_NUMBERS.includes(value)
-                    ){
-                        element.classList.add(
-                            "green-number"
-                        );
+                    // 赤色
+                    if(RED_NUMBERS.includes(value)){
+                        element.classList.add("red-number");
+                    }
+
+                    // 緑色
+                    if(GREEN_NUMBERS.includes(value)){
+                        element.classList.add("green-number");
                     }
                 }
 

@@ -55,6 +55,11 @@ th{
     font-weight:bold;
 }
 
+.pink-number{
+    background:#ffc0cb;
+    font-weight:bold;
+}
+
 .search-hit{
     background:yellow !important;
     font-weight:bold;
