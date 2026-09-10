@@ -1,494 +1,710 @@
-// ==============================
-// 色を付ける数字
-// ==============================
+// ============================================================
+// 配列検索
+// script.js
+// ============================================================
 
-const RED_NUMBERS = [
-    7,
-    14,
-    24,
-    40,
-    44,
-    51,
-    54,
-    58
+
+// ============================================================
+// 弾の設定
+// ============================================================
+//
+// 新しい弾を追加するときは、ここに追加するだけです。
+// 例：
+// {
+//     name: "VR5",
+//     file: "data_VR5.xlsx",
+//     redNumbers: [1, 2, 3, 4]
+// }
+//
+// HTML側のメニューを変更する必要はありません。
+// ============================================================
+
+const ROUNDS = [
+    {
+        name: "VR2",
+        file: "data_VR2.xlsx",
+
+        // VR2で赤色にする数字
+        redNumbers: [
+            1, 13, 25, 29, 37, 42, 46, 51
+        ]
+    },
+
+    {
+        name: "VR3",
+        file: "data_VR3.xlsx",
+
+        // VR3で赤色にする数字
+        redNumbers: [
+            7, 14, 24, 40, 44, 51, 54, 58
+        ]
+    },
+
+    {
+        name: "VR4",
+        file: "data_VR4.xlsx",
+
+        // VR4で赤色にする数字
+        redNumbers: [
+            7, 14, 24, 40, 44, 51, 54, 58
+        ]
+    }
 ];
 
 
-// 61～70は緑色
-const GREEN_NUMBERS = [
-    61,
-    62,
-    63,
-    64,
-    65,
-    66,
-    67,
-    68,
-    69,
-    70
-];
+// ============================================================
+// 共通の色設定
+// ============================================================
+
+// 緑色にする数字の範囲
+const GREEN_MIN = 61;
+const GREEN_MAX = 70;
+
+// ピンク色にする文字
+const PINK_TEXT = "P";
 
 
-// ==============================
-// 現在選択されている弾
-// ==============================
+// ============================================================
+// 現在の状態
+// ============================================================
 
-let currentFile = "data_VR4.xlsx";
+// 初期表示する弾
 let currentRound = "VR4";
 
-
-// ==============================
-// Excelを読み込む関数
-// ==============================
-
-function loadExcel(fileName, roundName) {
-
-    const container =
-        document.getElementById("sheetsContainer");
-
-    // 以前の表を消す
-    container.innerHTML = "";
-
-    // 現在の弾を表示
-    document.getElementById(
-        "currentRound"
-    ).textContent = roundName;
+// 初期表示するExcelファイル
+let currentFile = "data_VR4.xlsx";
 
 
-    fetch(fileName)
+// ============================================================
+// DOMの取得
+// ============================================================
 
-    .then(response => {
+const sheetsContainer = document.getElementById("sheetsContainer");
+const searchInput = document.getElementById("searchInput");
+const searchButton = document.getElementById("searchButton");
+const resetButton = document.getElementById("resetButton");
 
-        if (!response.ok) {
-            throw new Error(
-                "Excelファイルを読み込めませんでした"
-            );
+const menuButton = document.getElementById("menuButton");
+const sideMenu = document.getElementById("sideMenu");
+const overlay = document.getElementById("overlay");
+
+const currentRoundDisplay =
+    document.getElementById("currentRound");
+
+
+// ============================================================
+// ページ読み込み時
+// ============================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    // 弾のメニューを自動生成
+    createRoundMenu();
+
+    // 初期表示
+    loadExcel(currentFile, currentRound);
+
+});
+
+
+// ============================================================
+// 弾のメニューを自動生成
+// ============================================================
+//
+// ROUNDSに弾を追加すると、ここで自動的にボタンが作られます。
+// ============================================================
+
+function createRoundMenu() {
+
+    // メニュー内の弾ボタンを入れる場所
+    const roundMenu = document.getElementById("roundMenu");
+
+    if (!roundMenu) {
+        console.error("roundMenu が見つかりません。");
+        return;
+    }
+
+    // 一度空にする
+    roundMenu.innerHTML = "";
+
+    // ROUNDSの内容からボタンを作る
+    ROUNDS.forEach(round => {
+
+        const button = document.createElement("button");
+
+        button.textContent = round.name;
+
+        button.classList.add("round-button");
+
+        // 現在選択中の弾
+        if (round.name === currentRound) {
+            button.classList.add("active");
         }
 
-        return response.arrayBuffer();
+        // クリック時
+        button.addEventListener("click", () => {
 
-    })
+            // 選択された弾に変更
+            currentRound = round.name;
+            currentFile = round.file;
 
-    .then(data => {
+            // Excelを読み込む
+            loadExcel(currentFile, currentRound);
 
-        const workbook =
-            XLSX.read(data);
+            // 検索欄をリセット
+            searchInput.value = "";
 
+            // 検索結果の色もリセット
+            clearSearchHighlight();
 
-        workbook.SheetNames.forEach(
-            sheetName => {
+            // メニューを閉じる
+            closeMenu();
 
-                const worksheet =
-                    workbook.Sheets[sheetName];
+            // ボタンの選択状態を更新
+            updateRoundMenu();
 
+        });
 
-                const rows =
-                    XLSX.utils.sheet_to_json(
-                        worksheet,
-                        {
-                            header: 1
-                        }
-                    );
-
-
-                // ==============================
-                // Sheet部分
-                // ==============================
-
-                const section =
-                    document.createElement(
-                        "div"
-                    );
-
-                section.className =
-                    "sheet";
-
-
-                const title =
-                    document.createElement(
-                        "h2"
-                    );
-
-                title.textContent =
-                    sheetName;
-
-
-                section.appendChild(
-                    title
-                );
-
-
-                // ==============================
-                // table
-                // ==============================
-
-                const table =
-                    document.createElement(
-                        "table"
-                    );
-
-
-                rows.forEach(
-                    (row, rowIndex) => {
-
-                        const tr =
-                            document.createElement(
-                                "tr"
-                            );
-
-
-                        row.forEach(
-                            (cell, colIndex) => {
-
-                                // table列を非表示
-                                if (colIndex === 0) {
-                                    return;
-                                }
-
-
-                                const element =
-                                    document.createElement(
-                                        rowIndex === 0
-                                            ? "th"
-                                            : "td"
-                                    );
-
-
-                                element.textContent =
-                                    cell ?? "";
-
-
-                                // ==========================
-                                // row列
-                                // ==========================
-
-                                if (colIndex === 1) {
-
-                                    element.classList.add(
-                                        "row-column"
-                                    );
-
-                                }
-
-
-                                // ==========================
-                                // col1・col2
-                                // ==========================
-
-                                if (
-                                    rowIndex > 0 &&
-                                    colIndex >= 2
-                                ) {
-
-                                    const text =
-                                        String(
-                                            cell
-                                        ).trim();
-
-
-                                    const value =
-                                        Number(
-                                            cell
-                                        );
-
-
-                                    // 検索対象
-                                    element.dataset.searchable =
-                                        "true";
-
-
-                                    // ======================
-                                    // P / p → ピンク
-                                    // ======================
-
-                                    if (
-                                        text.toUpperCase()
-                                        === "P"
-                                    ) {
-
-                                        element.classList.add(
-                                            "pink-number"
-                                        );
-
-                                    }
-
-
-                                    // ======================
-                                    // 赤色
-                                    // ======================
-
-                                    if (
-                                        RED_NUMBERS.includes(
-                                            value
-                                        )
-                                    ) {
-
-                                        element.classList.add(
-                                            "red-number"
-                                        );
-
-                                    }
-
-
-                                    // ======================
-                                    // 緑色
-                                    // ======================
-
-                                    if (
-                                        GREEN_NUMBERS.includes(
-                                            value
-                                        )
-                                    ) {
-
-                                        element.classList.add(
-                                            "green-number"
-                                        );
-
-                                    }
-
-                                }
-
-
-                                tr.appendChild(
-                                    element
-                                );
-
-                            }
-                        );
-
-
-                        table.appendChild(
-                            tr
-                        );
-
-                    }
-                );
-
-
-                section.appendChild(
-                    table
-                );
-
-                container.appendChild(
-                    section
-                );
-
-            }
-        );
-
-    })
-
-    .catch(error => {
-
-        console.error(error);
-
-        container.innerHTML =
-            "<p>Excelファイルを読み込めませんでした。</p>";
+        roundMenu.appendChild(button);
 
     });
 
 }
 
 
-// ==============================
-// 最初にVR4を読み込む
-// ==============================
+// ============================================================
+// 弾メニューの選択状態を更新
+// ============================================================
 
-loadExcel(
-    currentFile,
-    currentRound
-);
+function updateRoundMenu() {
 
+    const buttons =
+        document.querySelectorAll(".round-button");
 
-// ==============================
-// ハンバーガーメニュー
-// ==============================
+    buttons.forEach(button => {
 
-const menuBtn =
-    document.getElementById(
-        "menuBtn"
-    );
+        if (button.textContent === currentRound) {
+            button.classList.add("active");
+        } else {
+            button.classList.remove("active");
+        }
 
-const sideMenu =
-    document.getElementById(
-        "sideMenu"
-    );
+    });
 
-const menuOverlay =
-    document.getElementById(
-        "menuOverlay"
-    );
+}
 
 
-function openMenu() {
+// ============================================================
+// Excelファイルを読み込む
+// ============================================================
 
-    sideMenu.classList.add(
-        "open"
-    );
+async function loadExcel(fileName, roundName) {
 
-    menuOverlay.classList.add(
-        "show"
+    try {
+
+        // 「読み込み中」を表示
+        sheetsContainer.innerHTML =
+            "<p>データを読み込んでいます...</p>";
+
+        // 現在の弾を表示
+        if (currentRoundDisplay) {
+            currentRoundDisplay.textContent = roundName;
+        }
+
+        // Excelファイルを取得
+        const response = await fetch(fileName);
+
+        if (!response.ok) {
+            throw new Error(
+                `Excelファイルを読み込めませんでした: ${fileName}`
+            );
+        }
+
+        // ArrayBufferに変換
+        const arrayBuffer = await response.arrayBuffer();
+
+        // XLSXで読み込み
+        const workbook =
+            XLSX.read(arrayBuffer, {
+                type: "array"
+            });
+
+        // 表示部分を空にする
+        sheetsContainer.innerHTML = "";
+
+        // 現在の弾の設定を取得
+        const roundData =
+            ROUNDS.find(round => round.name === roundName);
+
+        // 赤色にする数字
+        const redNumbers =
+            roundData ? roundData.redNumbers : [];
+
+        // Excelの各シートを処理
+        workbook.SheetNames.forEach(sheetName => {
+
+            const worksheet =
+                workbook.Sheets[sheetName];
+
+            // Excel → 配列
+            const data =
+                XLSX.utils.sheet_to_json(
+                    worksheet,
+                    {
+                        header: 1,
+                        defval: ""
+                    }
+                );
+
+            // シートを表示
+            renderSheet(
+                sheetName,
+                data,
+                redNumbers
+            );
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        sheetsContainer.innerHTML = `
+            <p class="error-message">
+                データの読み込みに失敗しました。<br>
+                ${error.message}
+            </p>
+        `;
+
+    }
+
+}
+
+
+// ============================================================
+// シートを画面に表示
+// ============================================================
+
+function renderSheet(
+    sheetName,
+    data,
+    redNumbers
+) {
+
+    // シート全体
+    const sheetWrapper =
+        document.createElement("div");
+
+    sheetWrapper.classList.add("sheet-wrapper");
+
+
+    // シート名
+    const sheetTitle =
+        document.createElement("h2");
+
+    sheetTitle.textContent = sheetName;
+
+    sheetWrapper.appendChild(sheetTitle);
+
+
+    // テーブル
+    const table =
+        document.createElement("table");
+
+    table.classList.add("data-table");
+
+
+    // ========================================================
+    // 各行
+    // ========================================================
+
+    data.forEach((row, rowIndex) => {
+
+        const tr =
+            document.createElement("tr");
+
+
+        // ====================================================
+        // 各列
+        // ====================================================
+
+        row.forEach((cell, colIndex) => {
+
+            const td =
+                document.createElement(
+                    rowIndex === 0
+                        ? "th"
+                        : "td"
+                );
+
+
+            // セルの文字
+            const text =
+                String(cell).trim();
+
+
+            // 数値として取得
+            const value =
+                Number(cell);
+
+
+            // =================================================
+            // table列
+            // =================================================
+            //
+            // 0列目の「table」は非表示
+            // =================================================
+
+            if (colIndex === 0) {
+                td.style.display = "none";
+            }
+
+
+            // =================================================
+            // row列
+            // =================================================
+            //
+            // rowは表示するが検索対象にはしない
+            // =================================================
+
+            if (colIndex === 1) {
+
+                td.classList.add("row-column");
+
+                // 検索対象外
+                td.dataset.searchable = "false";
+
+            }
+
+
+            // =================================================
+            // col1 / col2
+            // =================================================
+
+            if (colIndex === 2) {
+
+                td.classList.add("col1-column");
+
+            }
+
+            if (colIndex === 3) {
+
+                td.classList.add("col2-column");
+
+            }
+
+
+            // =================================================
+            // 通常のセル
+            // =================================================
+
+            td.textContent = text;
+
+
+            // =================================================
+            // データ検索対象
+            // =================================================
+            //
+            // row列以外を検索対象にする
+            // =================================================
+
+            if (rowIndex !== 0 && colIndex !== 1) {
+
+                td.dataset.searchable = "true";
+
+            }
+
+
+            // =================================================
+            // ヘッダー行
+            // =================================================
+
+            if (rowIndex === 0) {
+
+                td.dataset.searchable = "false";
+
+            }
+
+
+            // =================================================
+            // 赤色
+            // =================================================
+            //
+            // 弾ごとに設定された数字を赤色にする
+            // =================================================
+
+            if (
+                rowIndex !== 0 &&
+                !isNaN(value) &&
+                redNumbers.includes(value)
+            ) {
+
+                td.classList.add("red-number");
+
+            }
+
+
+            // =================================================
+            // 緑色
+            // =================================================
+            //
+            // 61～70を緑色にする
+            // =================================================
+
+            if (
+                rowIndex !== 0 &&
+                !isNaN(value) &&
+                value >= GREEN_MIN &&
+                value <= GREEN_MAX
+            ) {
+
+                td.classList.add("green-number");
+
+            }
+
+
+            // =================================================
+            // P / p
+            // =================================================
+            //
+            // P または p のセルをピンク色にする
+            // =================================================
+
+            if (
+                rowIndex !== 0 &&
+                text.toUpperCase() === PINK_TEXT
+            ) {
+
+                td.classList.add("pink-number");
+
+            }
+
+
+            // =================================================
+            // セルを追加
+            // =================================================
+
+            tr.appendChild(td);
+
+        });
+
+
+        // 行を追加
+        table.appendChild(tr);
+
+    });
+
+
+    // テーブルを追加
+    sheetWrapper.appendChild(table);
+
+    // シートを画面に追加
+    sheetsContainer.appendChild(sheetWrapper);
+
+}
+
+
+// ============================================================
+// 検索
+// ============================================================
+
+function searchData() {
+
+    // 検索文字
+    const keyword =
+        searchInput.value.trim();
+
+    // まず以前の検索結果を解除
+    clearSearchHighlight();
+
+
+    // 検索文字が空なら終了
+    if (keyword === "") {
+        return;
+    }
+
+
+    // 検索対象セル
+    const cells =
+        document.querySelectorAll(
+            'td[data-searchable="true"]'
+        );
+
+
+    // 各セルを確認
+    cells.forEach(cell => {
+
+        const text =
+            cell.textContent.trim();
+
+
+        // 数字検索
+        if (text === keyword) {
+
+            cell.classList.add("search-hit");
+
+        }
+
+    });
+
+}
+
+
+// ============================================================
+// 検索結果の色を解除
+// ============================================================
+
+function clearSearchHighlight() {
+
+    const cells =
+        document.querySelectorAll(
+            ".search-hit"
+        );
+
+    cells.forEach(cell => {
+
+        cell.classList.remove(
+            "search-hit"
+        );
+
+    });
+
+}
+
+
+// ============================================================
+// 検索ボタン
+// ============================================================
+
+if (searchButton) {
+
+    searchButton.addEventListener(
+        "click",
+        searchData
     );
 
 }
 
 
-function closeMenu() {
+// ============================================================
+// Enterキーで検索
+// ============================================================
 
-    sideMenu.classList.remove(
-        "open"
-    );
+if (searchInput) {
 
-    menuOverlay.classList.remove(
-        "show"
+    searchInput.addEventListener(
+        "keydown",
+        event => {
+
+            if (event.key === "Enter") {
+
+                searchData();
+
+            }
+
+        }
     );
 
 }
 
 
-menuBtn.addEventListener(
-    "click",
-    openMenu
-);
+// ============================================================
+// リセットボタン
+// ============================================================
 
+if (resetButton) {
 
-menuOverlay.addEventListener(
-    "click",
-    closeMenu
-);
-
-
-// ==============================
-// 弾の切り替え
-// ==============================
-
-document
-.querySelectorAll(".round-btn")
-.forEach(button => {
-
-    button.addEventListener(
+    resetButton.addEventListener(
         "click",
         () => {
 
-            const fileName =
-                button.dataset.file;
+            // 入力欄を空にする
+            searchInput.value = "";
 
-            const roundName =
-                button.textContent.trim();
-
-
-            currentFile =
-                fileName;
-
-            currentRound =
-                roundName;
-
-
-            // Excelを読み込み直す
-            loadExcel(
-                currentFile,
-                currentRound
-            );
-
-
-            // メニューを閉じる
-            closeMenu();
-
-
-            // 検索欄をクリア
-            document
-                .getElementById(
-                    "searchInput"
-                )
-                .value = "";
+            // 検索結果を解除
+            clearSearchHighlight();
 
         }
     );
 
-});
+}
 
 
-// ==============================
-// 検索
-// ==============================
+// ============================================================
+// ハンバーガーメニューを開く
+// ============================================================
 
-document
-.getElementById("searchBtn")
-.addEventListener(
-    "click",
-    () => {
+if (menuButton) {
 
-        const input =
-            document.getElementById(
-                "searchInput"
-            );
+    menuButton.addEventListener(
+        "click",
+        openMenu
+    );
+
+}
 
 
-        const target =
-            Number(
-                input.value
-            );
+// ============================================================
+// メニューを開く
+// ============================================================
 
+function openMenu() {
 
-        if (isNaN(target)) {
-            return;
-        }
-
-
-        // 現在表示している弾の
-        // 検索対象セルだけ検索
-        document
-            .querySelectorAll(
-                'td[data-searchable="true"]'
-            )
-            .forEach(td => {
-
-                if (
-                    Number(
-                        td.textContent
-                    ) === target
-                ) {
-
-                    td.classList.add(
-                        "search-hit"
-                    );
-
-                }
-
-            });
-
+    if (sideMenu) {
+        sideMenu.classList.add("open");
     }
-);
+
+    if (overlay) {
+        overlay.classList.add("show");
+    }
+
+}
 
 
-// ==============================
-// リセット
-// ==============================
+// ============================================================
+// メニューを閉じる
+// ============================================================
 
-document
-.getElementById("resetBtn")
-.addEventListener(
-    "click",
-    () => {
+function closeMenu() {
 
-        document
-            .querySelectorAll(
-                ".search-hit"
-            )
-            .forEach(td => {
+    if (sideMenu) {
+        sideMenu.classList.remove("open");
+    }
 
-                td.classList.remove(
-                    "search-hit"
-                );
+    if (overlay) {
+        overlay.classList.remove("show");
+    }
 
-            });
+}
 
 
-        document
-            .getElementById(
-                "searchInput"
-            )
-            .value = "";
+// ============================================================
+// 背景をクリックしてメニューを閉じる
+// ============================================================
+
+if (overlay) {
+
+    overlay.addEventListener(
+        "click",
+        closeMenu
+    );
+
+}
+
+
+// ============================================================
+// Escapeキーでメニューを閉じる
+// ============================================================
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (event.key === "Escape") {
+
+            closeMenu();
+
+        }
 
     }
 );
