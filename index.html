@@ -1,124 +1,67 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>配列検索</title>
 
-<meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>配列検索</title>
-
-<link
-    rel="stylesheet"
-    href="style.css"
->
-
-<script
-    src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js">
-</script>
-
+    <!-- Excel読み込み用 -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 </head>
 
 <body>
 
-<!-- ヘッダー -->
+    <!-- ヘッダー -->
+    <header class="header">
+        <button
+            id="menuBtn"
+            class="menu-btn"
+            type="button"
+            aria-label="弾のメニューを開く"
+            aria-controls="sideMenu"
+            aria-expanded="false"
+        >☰</button>
 
-<header class="header">
+        <h1>配列検索</h1>
 
-    <button
-        id="menuBtn"
-        class="menu-btn"
+        <div id="currentRound" class="current-round">VR4</div>
+    </header>
+
+    <!-- ハンバーガーメニュー -->
+    <nav
+        id="sideMenu"
+        class="side-menu"
+        aria-label="弾の選択"
     >
-        ☰
-    </button>
+        <div class="menu-title">弾を選択</div>
 
-    <h1>配列検索</h1>
+        <!-- script.js の ROUNDS から自動生成 -->
+        <div id="roundMenu"></div>
+    </nav>
 
-    <div
-        id="currentRound"
-        class="current-round"
-    >
-        VR4
-    </div>
+    <!-- メニューを開いたときの背景 -->
+    <div id="menuOverlay" class="menu-overlay"></div>
 
-</header>
+    <!-- 検索 -->
+    <main>
+        <div class="controls">
+            <input
+                type="number"
+                id="searchInput"
+                placeholder="検索したい数字"
+                inputmode="numeric"
+            >
 
+            <button id="searchBtn" type="button">検索</button>
+            <button id="resetBtn" type="button">リセット</button>
+        </div>
 
-<!-- ハンバーガーメニュー -->
+        <!-- Excelの表を表示 -->
+        <div id="sheetsContainer"></div>
+    </main>
 
-<div
-    id="sideMenu"
-    class="side-menu"
->
-
-    <div class="menu-title">
-        弾を選択
-    </div>
-
-    <button
-        class="round-btn"
-        data-file="data_VR2.xlsx"
-    >
-        VR2
-    </button>
-
-    <button
-        class="round-btn"
-        data-file="data_VR3.xlsx"
-    >
-        VR3
-    </button>
-
-    <button
-        class="round-btn"
-        data-file="data_VR4.xlsx"
-    >
-        VR4
-    </button>
-
-</div>
-
-
-<!-- メニューの外側をクリックしたときに閉じるための背景 -->
-
-<div
-    id="menuOverlay"
-    class="menu-overlay"
-></div>
-
-
-<!-- 検索 -->
-
-<div class="controls">
-
-    <input
-        type="number"
-        id="searchInput"
-        placeholder="検索したい数字"
-    >
-
-    <button id="searchBtn">
-        検索
-    </button>
-
-    <button id="resetBtn">
-        リセット
-    </button>
-
-</div>
-
-
-<!-- Excelの表を表示する場所 -->
-
-<div id="sheetsContainer"></div>
-
-
-<script src="script.js"></script>
-
+    <script src="script.js"></script>
 </body>
-
 </html>
