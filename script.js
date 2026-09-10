@@ -474,6 +474,7 @@ function renderSheet(
 
             if (
                 rowIndex !== 0 &&
+                colIndex !== 1 &&
                 text.toUpperCase() === PINK_TEXT
             ) {
 

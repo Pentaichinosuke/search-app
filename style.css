@@ -25,11 +25,18 @@ body {
 
     align-items: center;
 
-    position: relative;
+    position: sticky;
+
+    top: 0;
 
     background: white;
 
     border-bottom: 1px solid #ddd;
+
+    /*
+     * ヘッダーを表より前面に表示
+     */
+    z-index: 1000;
 
 }
 
@@ -49,7 +56,10 @@ body {
 
 .menu-btn {
 
-    position: absolute;
+    /*
+     * 表などに隠されないように固定
+     */
+    position: fixed;
 
     left: 15px;
 
@@ -66,6 +76,16 @@ body {
     font-size: 28px;
 
     cursor: pointer;
+
+    /*
+     * 画面上で最前面に表示
+     */
+    z-index: 3000;
+
+    /*
+     * ボタンを確実にクリックできるようにする
+     */
+    pointer-events: auto;
 
 }
 
@@ -105,7 +125,11 @@ body {
 
     background: white;
 
-    z-index: 1000;
+    /*
+     * overlayより前、
+     * ハンバーガーボタンより後ろ
+     */
+    z-index: 2000;
 
     box-shadow: 2px 0 8px rgba(
         0,
@@ -128,6 +152,10 @@ body {
 }
 
 
+/* ==============================
+   メニュータイトル
+   ============================== */
+
 .menu-title {
 
     font-size: 20px;
@@ -140,6 +168,10 @@ body {
 
 }
 
+
+/* ==============================
+   弾ボタン
+   ============================== */
 
 .round-btn {
 
@@ -194,7 +226,10 @@ body {
         0.3
     );
 
-    z-index: 999;
+    /*
+     * 表より前、メニューより後ろ
+     */
+    z-index: 1500;
 
     display: none;
 
@@ -255,6 +290,8 @@ button {
 
 }
 
+
+/* Sheetのタイトル */
 
 .sheet h2 {
 
@@ -370,6 +407,13 @@ th {
 
 @media screen and (max-width: 600px) {
 
+    .header {
+
+        height: 60px;
+
+    }
+
+
     .header h1 {
 
         font-size: 20px;
@@ -377,9 +421,29 @@ th {
     }
 
 
+    .menu-btn {
+
+        /*
+         * スマホでも押しやすい位置
+         */
+        left: 10px;
+
+        top: 10px;
+
+        width: 40px;
+
+        height: 40px;
+
+        font-size: 28px;
+
+    }
+
+
     .current-round {
 
         font-size: 14px;
+
+        right: 10px;
 
     }
 
