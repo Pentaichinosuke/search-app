@@ -1,41 +1,124 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
 <title>配列検索</title>
 
-<link rel="stylesheet" href="style.css">
+<link
+    rel="stylesheet"
+    href="style.css"
+>
 
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script
+    src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js">
+</script>
 
 </head>
 
 <body>
 
-<h1>配列検索</h1>
+<!-- ヘッダー -->
 
-<div class="controls">
+<header class="header">
 
-<input
-type="number"
-id="searchInput"
-placeholder="検索したい数字">
+    <button
+        id="menuBtn"
+        class="menu-btn"
+    >
+        ☰
+    </button>
 
-<button id="searchBtn">
-検索
-</button>
+    <h1>配列検索</h1>
 
-<button id="resetBtn">
-リセット
-</button>
+    <div
+        id="currentRound"
+        class="current-round"
+    >
+        VR4
+    </div>
+
+</header>
+
+
+<!-- ハンバーガーメニュー -->
+
+<div
+    id="sideMenu"
+    class="side-menu"
+>
+
+    <div class="menu-title">
+        弾を選択
+    </div>
+
+    <button
+        class="round-btn"
+        data-file="data_VR2.xlsx"
+    >
+        VR2
+    </button>
+
+    <button
+        class="round-btn"
+        data-file="data_VR3.xlsx"
+    >
+        VR3
+    </button>
+
+    <button
+        class="round-btn"
+        data-file="data_VR4.xlsx"
+    >
+        VR4
+    </button>
 
 </div>
 
+
+<!-- メニューの外側をクリックしたときに閉じるための背景 -->
+
+<div
+    id="menuOverlay"
+    class="menu-overlay"
+></div>
+
+
+<!-- 検索 -->
+
+<div class="controls">
+
+    <input
+        type="number"
+        id="searchInput"
+        placeholder="検索したい数字"
+    >
+
+    <button id="searchBtn">
+        検索
+    </button>
+
+    <button id="resetBtn">
+        リセット
+    </button>
+
+</div>
+
+
+<!-- Excelの表を表示する場所 -->
+
 <div id="sheetsContainer"></div>
+
 
 <script src="script.js"></script>
 
 </body>
+
 </html>

@@ -1,70 +1,431 @@
-body{
-    font-family:sans-serif;
-    margin:20px;
-    background:#f5f5f5;
+/* ==============================
+   全体
+   ============================== */
+
+body {
+
+    font-family: sans-serif;
+
+    margin: 0;
+
+    background: #f5f5f5;
+
 }
 
-h1{
-    text-align:center;
+
+/* ==============================
+   ヘッダー
+   ============================== */
+
+.header {
+
+    height: 60px;
+
+    display: flex;
+
+    align-items: center;
+
+    position: relative;
+
+    background: white;
+
+    border-bottom: 1px solid #ddd;
+
 }
 
-.controls{
-    margin-bottom:20px;
-    text-align:center;
+
+.header h1 {
+
+    margin: 0 auto;
+
+    font-size: 22px;
+
 }
 
-input{
-    padding:8px;
-    width:180px;
+
+/* ==============================
+   ハンバーガーボタン
+   ============================== */
+
+.menu-btn {
+
+    position: absolute;
+
+    left: 15px;
+
+    top: 10px;
+
+    width: 40px;
+
+    height: 40px;
+
+    border: none;
+
+    background: transparent;
+
+    font-size: 28px;
+
+    cursor: pointer;
+
 }
 
-button{
-    padding:8px 15px;
-    margin-left:5px;
+
+/* ==============================
+   現在の弾
+   ============================== */
+
+.current-round {
+
+    position: absolute;
+
+    right: 15px;
+
+    font-weight: bold;
+
+    font-size: 16px;
+
 }
 
-.sheet{
-    margin-bottom:40px;
+
+/* ==============================
+   ハンバーガーメニュー
+   ============================== */
+
+.side-menu {
+
+    position: fixed;
+
+    top: 0;
+
+    left: -260px;
+
+    width: 240px;
+
+    height: 100%;
+
+    background: white;
+
+    z-index: 1000;
+
+    box-shadow: 2px 0 8px rgba(
+        0,
+        0,
+        0,
+        0.2
+    );
+
+    transition: left 0.3s ease;
+
+    padding-top: 30px;
+
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
-    table-layout:fixed;
-    background:white;
+
+.side-menu.open {
+
+    left: 0;
+
 }
+
+
+.menu-title {
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    padding: 20px;
+
+    border-bottom: 1px solid #ddd;
+
+}
+
+
+.round-btn {
+
+    display: block;
+
+    width: 100%;
+
+    padding: 18px;
+
+    border: none;
+
+    border-bottom: 1px solid #eee;
+
+    background: white;
+
+    text-align: left;
+
+    font-size: 18px;
+
+    cursor: pointer;
+
+}
+
+
+.round-btn:hover {
+
+    background: #f0f0f0;
+
+}
+
+
+/* ==============================
+   メニュー背景
+   ============================== */
+
+.menu-overlay {
+
+    position: fixed;
+
+    top: 0;
+
+    left: 0;
+
+    width: 100%;
+
+    height: 100%;
+
+    background: rgba(
+        0,
+        0,
+        0,
+        0.3
+    );
+
+    z-index: 999;
+
+    display: none;
+
+}
+
+
+.menu-overlay.show {
+
+    display: block;
+
+}
+
+
+/* ==============================
+   検索部分
+   ============================== */
+
+.controls {
+
+    margin: 20px;
+
+    text-align: center;
+
+}
+
+
+input {
+
+    padding: 10px;
+
+    width: 180px;
+
+    max-width: 50%;
+
+    font-size: 16px;
+
+}
+
+
+button {
+
+    padding: 10px 15px;
+
+    margin-left: 5px;
+
+}
+
+
+/* ==============================
+   Sheet
+   ============================== */
+
+.sheet {
+
+    margin: 20px;
+
+    margin-bottom: 40px;
+
+}
+
+
+.sheet h2 {
+
+    margin-bottom: 10px;
+
+}
+
+
+/* ==============================
+   表
+   ============================== */
+
+table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    table-layout: fixed;
+
+    background: white;
+
+}
+
 
 th,
-td{
-    border:1px solid #ccc;
-    padding:8px;
-    text-align:center;
+td {
+
+    border: 1px solid #ccc;
+
+    padding: 8px;
+
+    text-align: center;
+
+    word-break: break-word;
+
 }
 
-th{
-    background:#eeeeee;
+
+th {
+
+    background: #eeeeee;
+
 }
 
-.red-number{
-    background:#ffb3b3;
-    font-weight:bold;
+
+/* ==============================
+   row列
+   ============================== */
+
+.row-column {
+
+    background: #fafafa;
+
 }
 
-.green-number{
-    background:#c8f7c5;
-    font-weight:bold;
+
+/* ==============================
+   赤色
+   ============================== */
+
+.red-number {
+
+    background: #ffb3b3;
+
+    font-weight: bold;
+
 }
 
-.pink-number{
-    background:#ffc0cb;
-    font-weight:bold;
+
+/* ==============================
+   緑色
+   ============================== */
+
+.green-number {
+
+    background: #c8f7c5;
+
+    font-weight: bold;
+
 }
 
-.search-hit{
-    background:yellow !important;
-    font-weight:bold;
+
+/* ==============================
+   P / p
+   ============================== */
+
+.pink-number {
+
+    background: #ffc0cb;
+
+    font-weight: bold;
+
 }
 
-.row-column{
-    background:#fafafa;
+
+/* ==============================
+   検索結果
+   ============================== */
+
+.search-hit {
+
+    background: yellow !important;
+
+    font-weight: bold;
+
+}
+
+
+/* ==============================
+   スマホ用
+   ============================== */
+
+@media screen and (max-width: 600px) {
+
+    .header h1 {
+
+        font-size: 20px;
+
+    }
+
+
+    .current-round {
+
+        font-size: 14px;
+
+    }
+
+
+    .controls {
+
+        display: flex;
+
+        flex-wrap: wrap;
+
+        justify-content: center;
+
+        gap: 5px;
+
+    }
+
+
+    input {
+
+        width: 140px;
+
+        max-width: none;
+
+    }
+
+
+    button {
+
+        margin-left: 0;
+
+    }
+
+
+    .sheet {
+
+        margin: 10px;
+
+        overflow-x: auto;
+
+    }
+
+
+    table {
+
+        min-width: 400px;
+
+    }
+
 }
