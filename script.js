@@ -435,6 +435,7 @@ function renderSheet(
 
             if (
                 rowIndex !== 0 &&
+                colIndex !== 1 &&
                 !isNaN(value) &&
                 redNumbers.includes(value)
             ) {
@@ -453,6 +454,7 @@ function renderSheet(
 
             if (
                 rowIndex !== 0 &&
+                colIndex !== 1 &&
                 !isNaN(value) &&
                 value >= GREEN_MIN &&
                 value <= GREEN_MAX
