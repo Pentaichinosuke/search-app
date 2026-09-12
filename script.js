@@ -671,10 +671,6 @@ function searchData() {
         searchInput.value.trim();
 
 
-    // 以前の検索結果を解除
-    clearSearchHighlight();
-
-
     // 空欄なら終了
     if (keyword === "") {
         return;
