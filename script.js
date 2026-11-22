@@ -25,7 +25,7 @@ const ROUNDS = [
         name: "VR4",
         file: "data_VR4.xlsx",
         redNumbers: [1, 5, 25, 40, 46, 49, 53, 58]
-    }
+    },
     {
         name: "VR5",
         file: "data_VR5.xlsx",
